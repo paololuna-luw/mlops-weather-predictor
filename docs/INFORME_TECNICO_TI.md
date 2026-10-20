@@ -28,7 +28,7 @@ El archivo local de arranque menciona un `WEBHOOK_SECRET` pensado para pedirle a
 .
 ├── .github/workflows/
 │   ├── ci-cd-pipeline.yml          # CI: pytest + build de Next.js
-│   └── mlops-retrain.yml           # CT: cron 06:00 UTC y ejecución manual
+│   └── mlops-retrain.yml           # CT: cron cada 3 horas y ejecución manual
 ├── ml_pipeline/
 │   ├── config.py                   # Coordenadas, features, grilla y credenciales
 │   ├── fetch_data.py               # ETL Open-Meteo → weather_features
@@ -160,7 +160,7 @@ Esas pruebas no llaman a Open-Meteo ni a Supabase. Un PR con una grilla rota, un
 
 ### Entrenamiento continuo
 
-El workflow `MLOps Continuous Training & Deployment Pipeline` se dispara todos los días a las 06:00 UTC y también con **Run workflow**. El orden es fijo:
+El workflow `MLOps Continuous Training & Deployment Pipeline` se dispara cada 3 horas (`0 */3 * * *`, es decir 00:00, 03:00, 06:00, 09:00, 12:00, 15:00, 18:00 y 21:00 UTC) y también con **Run workflow**. En Lima esas horas son 19:00, 22:00, 01:00, 04:00, 07:00, 10:00, 13:00 y 16:00. El orden es fijo:
 
 1. Checkout e instalación de Python 3.11.
 2. `pytest` como compuerta. Si falla, no hay ingesta ni publicación.
@@ -188,7 +188,7 @@ sequenceDiagram
     participant ST as Bucket models
     participant Web as Next.js en Vercel
 
-    Eval->>GHA: workflow_dispatch o cron 06:00 UTC
+    Eval->>GHA: workflow_dispatch o cron cada 3 horas
     GHA->>GHA: pytest offline
     GHA->>OM: archivo 730 días + forecast reciente
     OM-->>GHA: variables diarias
@@ -243,4 +243,4 @@ La ingesta y el entrenamiento se ejecutaron contra el proyecto `eqzsjrfwrolhlual
 
 `/api/status` respondió `Zero-Downtime Active`. Un POST de tormenta devolvió lluvia con probabilidad 0.858 en menos de 1 ms y siete impactos. Un día seco de invierno devolvió clase negativa con probabilidad 0.143. El `.joblib` público se volvió a cargar con `joblib.load` y produjo una probabilidad finita.
 
-El cron de las 06:00 UTC corresponde a la 01:00 en Lima. A esa hora, la precipitación del día civil recién empieza, así que la fila de “hoy” mezcla observación reciente y pronóstico del propio día. Es el comportamiento pedido por la ventana `past_days=7` y `forecast_days=1`. Si operación necesita el día ya cerrado, el cambio se hace solo en el cron del workflow; el código de entrenamiento no depende de la hora.
+En las corridas de la madrugada de Lima la precipitación del día civil recién empieza, así que la fila de “hoy” mezcla observación reciente y pronóstico del propio día. Es el comportamiento de la ventana `past_days=7` y `forecast_days=1`. El código de entrenamiento no depende de la hora: solo cambia el cron.

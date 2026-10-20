@@ -70,9 +70,9 @@ La aplicación queda en `http://localhost:3000`. Los cuatro apartados en inglés
 | Workflow | Disparador | Efecto |
 | --- | --- | --- |
 | `.github/workflows/ci-cd-pipeline.yml` | `push` y `pull_request` hacia `main` | `pytest` del pipeline y `npm run build` de Next.js |
-| `.github/workflows/mlops-retrain.yml` | Cron `0 6 * * *` (06:00 UTC = 01:00 en Lima) y botón **Run workflow** | pytest, ingesta Open-Meteo, reentrenamiento, subida del `.joblib` y cambio del modelo activo |
+| `.github/workflows/mlops-retrain.yml` | Cron `0 */3 * * *` (cada 3 horas) y botón **Run workflow** | pytest, ingesta Open-Meteo, reentrenamiento, subida del `.joblib` y cambio del modelo activo |
 
-El cron está expresado en UTC, como exige GitHub Actions. Para la exposición se usa **workflow_dispatch**, no hace falta esperar a la 01:00 de Lima.
+El cron está en UTC. En Lima corre a las 19:00, 22:00, 01:00, 04:00, 07:00, 10:00, 13:00 y 16:00. Cada corrida actualiza el feature store y publica una versión nueva en el historial. **Run workflow** hace la misma corrida en el momento.
 
 ## Contrato de inferencia
 

@@ -139,4 +139,4 @@ Comprobaciones mínimas:
 5. `POST http://localhost:3000/api/predict` con las siete features devuelve `will_rain`, `rain_probability`, `model_version` e `impacts` de longitud 7.
 6. El build de Next.js termina sin errores de TypeScript.
 
-El cron `0 6 * * *` queda como mantenimiento diario. La exposición no depende de él: depende de **Run workflow**.
+El cron `0 */3 * * *` deja una corrida automática cada 3 horas. En Lima cae a las 19:00, 22:00, 01:00, 04:00, 07:00, 10:00, 13:00 y 16:00. Para la exposición se puede mostrar el historial que esas corridas ya escribieron, y **Run workflow** lanza una corrida igual delante del jurado.

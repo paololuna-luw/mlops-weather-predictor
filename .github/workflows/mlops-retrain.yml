@@ -1,9 +1,11 @@
 name: MLOps Continuous Training & Deployment Pipeline
 
-# 06:00 UTC is 01:00 in America/Lima. workflow_dispatch runs the same job on demand.
+# Every 3 hours UTC: 00:00, 03:00, 06:00, 09:00, 12:00, 15:00, 18:00, 21:00.
+# In America/Lima that is 19:00, 22:00, 01:00, 04:00, 07:00, 10:00, 13:00 and 16:00.
+# workflow_dispatch runs the same job on demand.
 on:
   schedule:
-    - cron: "0 6 * * *"
+    - cron: "0 */3 * * *"
   workflow_dispatch:
 
 permissions:
