@@ -1,0 +1,9 @@
+numpy>=1.26.4,<2.3
+pandas>=2.2.2,<2.3
+scipy>=1.11.4,<1.15
+scikit-learn>=1.5.2,<1.6
+joblib>=1.4.2,<2
+requests>=2.32.3,<3
+python-dotenv>=1.0.1,<2
+supabase>=2.11.0,<3
+pytest>=8.3.0,<9

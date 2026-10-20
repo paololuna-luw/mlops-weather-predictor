@@ -1,0 +1,47 @@
+name: MLOps Continuous Training & Deployment Pipeline
+
+# 06:00 UTC is 01:00 in America/Lima. workflow_dispatch runs the same job on demand.
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mlops-continuous-training
+  cancel-in-progress: false
+
+jobs:
+  retrain-and-publish:
+    name: Ingest, test, retrain, and hot-swap
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: ml_pipeline/requirements.txt
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ml_pipeline/requirements.txt
+
+      - name: Run pipeline quality tests
+        run: pytest ml_pipeline/tests/ -v
+
+      - name: Ingest Open-Meteo observations into the feature store
+        run: python -m ml_pipeline.fetch_data
+
+      - name: Retrain, evaluate, and publish with zero downtime
+        run: python -m ml_pipeline.train_and_evaluate

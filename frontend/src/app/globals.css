@@ -1,0 +1,135 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --lake: #07141c;
+  --reed: #e2b56a;
+  --glacial: #8fd8cb;
+  --ink: #f4efe6;
+  --muted: #b7c3bb;
+  --line: rgba(226, 196, 150, 0.18);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  background:
+    radial-gradient(1200px 500px at 10% -10%, rgba(226, 181, 106, 0.16), transparent 55%),
+    radial-gradient(900px 480px at 100% 0%, rgba(90, 168, 196, 0.18), transparent 50%),
+    linear-gradient(180deg, #102838 0%, var(--lake) 42%, #081016 100%);
+  font-family: Outfit, "Avenir Next", "Segoe UI", sans-serif;
+}
+
+body::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 100% 4px;
+  mix-blend-mode: soft-light;
+  opacity: 0.35;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.ops-card {
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(16, 40, 52, 0.92), rgba(8, 22, 30, 0.88));
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+  border-radius: 1.25rem;
+}
+
+.kicker {
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  color: var(--reed);
+}
+
+.pulse-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: #8ee0a8;
+  box-shadow: 0 0 0 0 rgba(142, 224, 168, 0.7);
+  animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+  70% {
+    box-shadow: 0 0 0 8px rgba(142, 224, 168, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(142, 224, 168, 0);
+  }
+}
+
+.metric-value {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+input[type="range"] {
+  accent-color: #e2b56a;
+}
+
+.table-shell {
+  overflow-x: auto;
+}
+
+table.data-grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+table.data-grid th {
+  text-align: left;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #d9c7a4;
+  font-weight: 600;
+  padding: 0.75rem 0.8rem;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+table.data-grid td {
+  padding: 0.75rem 0.8rem;
+  border-bottom: 1px solid rgba(226, 196, 150, 0.08);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+table.data-grid tr:last-child td {
+  border-bottom: 0;
+}
+
+.bar-track {
+  height: 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #6cb6ff, #8fd8cb);
+}
