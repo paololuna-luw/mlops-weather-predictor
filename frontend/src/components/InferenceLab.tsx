@@ -6,9 +6,9 @@ import { useEffect, useState } from "react";
 import { DetailsToggle } from "@/components/DetailsToggle";
 import { formatNumber, formatPercent } from "@/lib/format";
 import {
+  DAY_PRESETS,
   DRY_WINTER_PRESET,
   FEATURE_FIELDS,
-  STORM_PRESET,
   type DailyForecast,
   type PredictionRequest,
   type PredictionResponse,
@@ -94,27 +94,23 @@ export function InferenceLab({ forecast }: { forecast: DailyForecast | null }) {
           <p className="kicker">Interactive simulator</p>
           <h2 className="mt-2 text-2xl">Try another kind of day</h2>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-ink/75">
-            Move the weather sliders, or pick a dry day or a storm, and see if tomorrow would be rainy.
+            Move the weather sliders, or pick a kind of day, and see if tomorrow would be rainy.
           </p>
         </div>
         <FlaskConical className="h-8 w-8 text-lake" aria-hidden />
       </div>
 
       <div className="mt-5 flex flex-wrap gap-3">
-        <button
-          type="button"
-          onClick={() => applyPreset(DRY_WINTER_PRESET)}
-          className="soft-button rounded-full px-4 py-2 text-sm"
-        >
-          Typical Dry Winter Day
-        </button>
-        <button
-          type="button"
-          onClick={() => applyPreset(STORM_PRESET)}
-          className="soft-button rounded-full px-4 py-2 text-sm"
-        >
-          Heavy Storm Front
-        </button>
+        {DAY_PRESETS.map((preset) => (
+          <button
+            key={preset.label}
+            type="button"
+            onClick={() => applyPreset(preset.values)}
+            className="soft-button rounded-full px-4 py-2 text-sm"
+          >
+            {preset.label}
+          </button>
+        ))}
       </div>
 
       <div className="mt-6 grid gap-5 lg:grid-cols-2">

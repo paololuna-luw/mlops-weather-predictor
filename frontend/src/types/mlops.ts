@@ -201,3 +201,52 @@ export const STORM_PRESET: PredictionRequest = {
   et0_fao_evapotranspiration: 1.3,
   precipitation_sum: 16.5,
 };
+
+export const BRIGHT_SUN_PRESET: PredictionRequest = {
+  temperature_2m_max: 20.4,
+  temperature_2m_min: 1.2,
+  apparent_temperature_max: 18.6,
+  wind_speed_10m_max: 14,
+  shortwave_radiation_sum: 31.5,
+  et0_fao_evapotranspiration: 6.8,
+  precipitation_sum: 0,
+};
+
+export const FROST_PRESET: PredictionRequest = {
+  temperature_2m_max: 11.6,
+  temperature_2m_min: -7.4,
+  apparent_temperature_max: 7.8,
+  wind_speed_10m_max: 9,
+  shortwave_radiation_sum: 24.8,
+  et0_fao_evapotranspiration: 3.2,
+  precipitation_sum: 0,
+};
+
+export const LAKE_WIND_PRESET: PredictionRequest = {
+  temperature_2m_max: 15.8,
+  temperature_2m_min: 4.6,
+  apparent_temperature_max: 12.2,
+  wind_speed_10m_max: 42,
+  shortwave_radiation_sum: 16.4,
+  et0_fao_evapotranspiration: 3.9,
+  precipitation_sum: 0.6,
+};
+
+export const SHOWER_PRESET: PredictionRequest = {
+  temperature_2m_max: 14.8,
+  temperature_2m_min: 6.1,
+  apparent_temperature_max: 12.9,
+  wind_speed_10m_max: 20,
+  shortwave_radiation_sum: 11.2,
+  et0_fao_evapotranspiration: 2.1,
+  precipitation_sum: 4.8,
+};
+
+export const DAY_PRESETS: { label: string; values: PredictionRequest }[] = [
+  { label: "Typical Dry Winter Day", values: DRY_WINTER_PRESET },
+  { label: "Bright Altiplano Sun", values: BRIGHT_SUN_PRESET },
+  { label: "Frost at Dawn", values: FROST_PRESET },
+  { label: "Windy Lake Afternoon", values: LAKE_WIND_PRESET },
+  { label: "Light Afternoon Shower", values: SHOWER_PRESET },
+  { label: "Heavy Storm Front", values: STORM_PRESET },
+];
