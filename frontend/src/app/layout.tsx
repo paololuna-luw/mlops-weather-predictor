@@ -6,7 +6,7 @@ import { TranslationGuard } from "@/components/TranslationGuard";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Altiplano RainCast AI — Supervised MLOps Platform",
+  title: "Altiplano RainCast",
   description:
     "Will it rain tomorrow in Puno, Peru? Live supervised classification with zero-downtime model publication.",
 };

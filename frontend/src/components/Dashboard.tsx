@@ -113,9 +113,10 @@ export function Dashboard() {
             ) : null}
           </div>
         </div>
-        <h1 className="mt-2 text-4xl leading-tight tracking-tight md:text-[2.75rem]">
-          Altiplano RainCast AI — Supervised MLOps Platform
-        </h1>
+        <div className="mt-2 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+          <h1 className="text-4xl leading-none tracking-tight md:text-[3rem]">Altiplano RainCast</h1>
+          <p className="text-xl leading-none text-ink/60 md:text-2xl">Supervised MLOps Platform</p>
+        </div>
         <div className="mt-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <p className="max-w-xl text-base leading-6 text-ink/70">
             Will it rain tomorrow in Puno? A live model that learns from fresh weather data every few hours.
