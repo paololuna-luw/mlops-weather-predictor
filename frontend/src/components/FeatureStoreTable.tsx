@@ -1,3 +1,4 @@
+import { DetailsToggle } from "@/components/DetailsToggle";
 import { formatNumber, targetLabel } from "@/lib/format";
 import { FEATURE_FIELDS, type WeatherFeature } from "@/types/mlops";
 
@@ -5,15 +6,27 @@ export function FeatureStoreTable({ rows }: { rows: WeatherFeature[] }) {
   return (
     <section className="ops-card p-6 md:p-8">
       <p className="kicker">Feature store</p>
-      <h2 className="mt-2 text-2xl">Latest Open-Meteo rows</h2>
+      <h2 className="mt-2 text-2xl">Latest days in Puno</h2>
       <p className="mt-2 max-w-3xl text-sm leading-6 text-ink/75">
-        Last 10 days stored in weather_features for Puno. The target is 1 when the next day&apos;s
-        precipitation is at least 1.0 mm. Today stays Pending until that next day exists.
+        The newest weather rows. Pending means tomorrow has not happened yet.
       </p>
-      {rows.length === 0 ? (
-        <p className="mt-6 rounded-2xl border border-dashed border-ink/15 px-4 py-8 text-sm text-ink/70">
-          No feature-store rows yet. The ingestion step upserts Open-Meteo history into Supabase.
+      <DetailsToggle label="How rain tomorrow is labeled">
+        <p className="max-w-3xl text-sm leading-6 text-ink/75">
+          These are the last 10 days stored in weather_features. The target is 1 when the next day&apos;s
+          precipitation is at least 1.0 mm. Today stays Pending until that next day exists.
         </p>
+      </DetailsToggle>
+      {rows.length === 0 ? (
+        <>
+          <p className="mt-6 rounded-2xl border border-dashed border-ink/15 px-4 py-8 text-sm text-ink/70">
+            No weather rows yet.
+          </p>
+          <DetailsToggle label="Where these rows come from">
+            <p className="text-sm leading-6 text-ink/75">
+              The ingestion step upserts Open-Meteo history into the weather_features table in Supabase.
+            </p>
+          </DetailsToggle>
+        </>
       ) : (
         <div className="table-shell mt-5">
           <table className="data-grid">

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
+import { RainBackdrop } from "@/components/RainBackdrop";
+import { TranslationGuard } from "@/components/TranslationGuard";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -20,7 +22,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <TranslationGuard />
+        <RainBackdrop />
+        {children}
+      </body>
     </html>
   );
 }

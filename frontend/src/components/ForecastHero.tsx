@@ -1,12 +1,13 @@
 import { CloudRain, CloudSun, MapPin, Sprout } from "lucide-react";
 
+import { DetailsToggle } from "@/components/DetailsToggle";
 import { formatLongDate, formatNumber, formatPercent, formatTimestamp } from "@/lib/format";
 import { FEATURE_FIELDS, type DailyForecast } from "@/types/mlops";
 
 function Mountains() {
   return (
     <svg
-      className="pointer-events-none absolute inset-x-0 bottom-0 h-28 w-full md:h-32"
+      className="pointer-events-none absolute inset-x-0 bottom-0 h-24 w-full md:h-28"
       viewBox="0 0 400 120"
       preserveAspectRatio="none"
       aria-hidden
@@ -44,7 +45,7 @@ export function ForecastHero({ forecast }: { forecast: DailyForecast | null }) {
   return (
     <section className="ops-card no-accent overflow-hidden">
       <div
-        className="relative px-6 pb-32 pt-7 text-white md:px-10 md:pb-40 md:pt-9"
+        className="relative px-6 pb-24 pt-6 text-white md:px-10 md:pb-28 md:pt-7"
         style={{ background: "linear-gradient(160deg, #5a7fd0 0%, #3f5a99 100%)" }}
       >
         <div className="flex flex-wrap items-center gap-2 text-sm text-white/90">
@@ -53,7 +54,7 @@ export function ForecastHero({ forecast }: { forecast: DailyForecast | null }) {
         </div>
         <p className="mt-6 text-sm text-white/90">Tomorrow&apos;s Automated Weather Forecast</p>
         <p className="text-lg font-light">{formatLongDate(forecast.forecast_for_date)}</p>
-        <div className="mt-5 flex items-center gap-4">
+        <div className="forecast-reveal mt-4 flex items-center gap-4">
           {rainy ? (
             <CloudRain className="h-14 w-14 shrink-0" aria-hidden />
           ) : (
@@ -63,37 +64,33 @@ export function ForecastHero({ forecast }: { forecast: DailyForecast | null }) {
             {rainy ? "RAIN EXPECTED TOMORROW" : "CLEAR / DRY CONDITIONS EXPECTED"}
           </h2>
         </div>
-        <p className="mt-5 text-5xl font-light md:text-6xl">{formatPercent(probability)}</p>
+        <p className="forecast-reveal mt-4 text-5xl font-light md:text-6xl">{formatPercent(probability)}</p>
         <p className="mt-1 text-sm text-white/90">Rain probability · model {forecast.model_version}</p>
-        <div className="mt-5 max-w-md">
+        <div className="mt-4 max-w-md">
           <div className="mb-1.5 flex justify-between text-xs text-white/85">
             <span>Dry</span>
             <span>Rain</span>
           </div>
           <div className="h-2 overflow-hidden rounded-full bg-white/25" aria-hidden>
-            <div className="h-full rounded-full bg-white" style={{ width: `${probability * 100}%` }} />
+            <div className="prob-fill h-full rounded-full bg-white" style={{ width: `${probability * 100}%` }} />
           </div>
           <p className="sr-only">Rain probability {formatPercent(probability)}</p>
         </div>
         <Mountains />
       </div>
 
-      <div className="grid gap-6 p-6 md:p-10 lg:grid-cols-[1fr_1.1fr]">
-        <div>
-          <div className="flex gap-3 rounded-2xl bg-mist p-4">
-            <Sprout className="mt-0.5 h-5 w-5 shrink-0 text-lake" aria-hidden />
-            <p className="text-sm leading-6 md:text-base">
-              {rainy
-                ? "Automated Business Action: Activate agricultural irrigation hold & urban drainage alert"
-                : "Normal agricultural & transport operations"}
-            </p>
-          </div>
-          <p className="mt-4 text-xs text-ink/55">Stored {formatTimestamp(forecast.created_at)}</p>
+      <div className="p-6 md:p-8">
+        <div className="flex gap-3 rounded-2xl bg-mist p-4">
+          <Sprout className="mt-0.5 h-5 w-5 shrink-0 text-lake" aria-hidden />
+          <p className="text-sm leading-6 md:text-base">
+            {rainy
+              ? "Hold irrigation and watch city drains. Rain is the likely call."
+              : "Normal agricultural and transport operations."}
+          </p>
         </div>
-        <div>
-          <h3 className="text-lg">Today&apos;s seven drivers</h3>
-          <p className="mt-1 text-sm text-ink/60">Features that produced this forecast</p>
-          <dl className="mt-4 space-y-2.5">
+        <p className="mt-3 text-xs text-ink/55">Stored {formatTimestamp(forecast.created_at)}</p>
+        <DetailsToggle label="Today's seven weather numbers">
+          <dl className="grid gap-2 sm:grid-cols-2">
             {FEATURE_FIELDS.map((field) => (
               <div key={field.key} className="flex items-baseline justify-between gap-4 border-b border-ink/5 pb-2">
                 <dt className="text-sm text-ink/75">{field.label}</dt>
@@ -103,7 +100,7 @@ export function ForecastHero({ forecast }: { forecast: DailyForecast | null }) {
               </div>
             ))}
           </dl>
-        </div>
+        </DetailsToggle>
       </div>
     </section>
   );

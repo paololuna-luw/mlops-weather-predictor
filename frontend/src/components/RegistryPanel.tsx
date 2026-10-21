@@ -1,5 +1,6 @@
 import { Download } from "lucide-react";
 
+import { DetailsToggle } from "@/components/DetailsToggle";
 import { formatNumber, formatTimestamp } from "@/lib/format";
 import { FEATURE_FIELDS, type ModelRegistryRecord } from "@/types/mlops";
 
@@ -36,10 +37,15 @@ export function RegistryPanel({
         <p className="kicker">Model registry</p>
         <h2 className="mt-2 text-2xl">No production model yet</h2>
         <p className="mt-4 max-w-2xl text-sm leading-6 text-ink/75">
-          Run the GitHub Action &quot;MLOps Continuous Training &amp; Deployment Pipeline&quot;. It
-          ingests Open-Meteo, passes pytest, fits GridSearchCV, and inserts the new active row
-          before archiving the previous one.
+          The scores appear here after the first successful training run.
         </p>
+        <DetailsToggle label="What that training run does">
+          <p className="max-w-2xl text-sm leading-6 text-ink/75">
+            The GitHub Action &quot;MLOps Continuous Training &amp; Deployment Pipeline&quot; ingests
+            Open-Meteo, passes pytest, fits GridSearchCV, and inserts the new active row before
+            archiving the previous one.
+          </p>
+        </DetailsToggle>
       </section>
     );
   }
@@ -48,10 +54,10 @@ export function RegistryPanel({
   const maxCoefficient = Math.max(...(weights?.coefficients.map((value) => Math.abs(value)) ?? [1]), 0.0001);
   const matrix = active.confusion_matrix;
   const cells = [
-    { label: "True negatives", detail: "Actual dry, predicted dry", value: cell(matrix, 0, 0), tone: "bg-lake/10" },
-    { label: "False positives", detail: "Actual dry, predicted rain", value: cell(matrix, 0, 1), tone: "bg-totora/10" },
-    { label: "False negatives", detail: "Actual rain, predicted dry", value: cell(matrix, 1, 0), tone: "bg-totora/20" },
-    { label: "True positives", detail: "Actual rain, predicted rain", value: cell(matrix, 1, 1), tone: "bg-lake/20" },
+    { label: "Dry days called dry", value: cell(matrix, 0, 0), tone: "bg-lake/10" },
+    { label: "Dry days called rain", value: cell(matrix, 0, 1), tone: "bg-totora/10" },
+    { label: "Rainy days missed", value: cell(matrix, 1, 0), tone: "bg-totora/20" },
+    { label: "Rainy days called rain", value: cell(matrix, 1, 1), tone: "bg-lake/20" },
   ];
 
   return (
@@ -60,9 +66,9 @@ export function RegistryPanel({
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="kicker">Production model</p>
-            <h2 className="mt-2 text-2xl">Evaluation metrics and confusion matrix</h2>
+            <h2 className="mt-2 text-2xl">How well this model did</h2>
             <p className="mt-2 text-sm text-ink/70">
-              {active.algorithm} · {active.version} · trained {formatTimestamp(active.created_at)}
+              {active.version} · trained {formatTimestamp(active.created_at)}
             </p>
           </div>
           {active.storage_path ? (
@@ -73,7 +79,7 @@ export function RegistryPanel({
               rel="noopener noreferrer"
             >
               <Download className="h-4 w-4" aria-hidden />
-              Download .joblib Model Artifact
+              Download the model file
             </a>
           ) : (
             <span className="text-sm text-ink/60">Artifact URL pending</span>
@@ -84,37 +90,49 @@ export function RegistryPanel({
           <MetricCard
             label="Accuracy"
             value={formatNumber(active.accuracy, 3)}
-            hint="Hold-out classification accuracy"
+            hint="Share of test days called correctly"
             ratio={active.accuracy}
           />
           <MetricCard
-            label="F1-Score (Optimization Target)"
+            label="F1-Score"
             value={formatNumber(active.f1_score, 3)}
-            hint="GridSearchCV scoring = f1"
+            hint="Balance between missed rain and false alarms"
             ratio={active.f1_score}
           />
           <MetricCard
             label="ROC-AUC"
             value={formatNumber(active.roc_auc, 3)}
-            hint="Ranking quality on the hold-out set"
+            hint="Rainy days ranked above dry days"
             ratio={active.roc_auc}
           />
           <MetricCard
-            label="Training Dataset Size (Days)"
+            label="Days used to train"
             value={active.dataset_rows === null ? "—" : String(active.dataset_rows)}
-            hint="Labeled daily rows in the 80/20 split"
+            hint="Labeled days from Puno"
           />
         </div>
+        <DetailsToggle label="How these scores were measured">
+          <p className="max-w-3xl text-sm leading-6 text-ink/75">
+            {active.algorithm}. Accuracy, F1, and ROC-AUC are measured on a held-out 20% of days.
+            GridSearchCV chose the hyperparameters by optimizing F1 (scoring = f1) with 5-fold
+            cross-validation. The live forecast still uses the 50% probability cutoff.
+          </p>
+        </DetailsToggle>
 
         <div className="mt-6">
-          <h3 className="text-lg">Confusion matrix · [[TN, FP], [FN, TP]]</h3>
+          <h3 className="text-lg">Where the model was right and wrong</h3>
+          <DetailsToggle label="Matrix order, [[TN, FP], [FN, TP]]">
+            <p className="text-sm text-ink/70">
+              True negatives and true positives are correct calls. False positives predicted rain on a dry day.
+              False negatives missed a rainy day.
+            </p>
+          </DetailsToggle>
           {matrix ? (
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {cells.map((item) => (
                 <article key={item.label} className={`rounded-2xl border border-ink/10 p-4 ${item.tone}`}>
                   <p className="text-sm text-ink/70">{item.label}</p>
                   <p className="metric-value mt-2 text-3xl">{item.value ?? "—"}</p>
-                  <p className="mt-1 text-xs text-ink/55">{item.detail}</p>
                 </article>
               ))}
             </div>
@@ -125,9 +143,10 @@ export function RegistryPanel({
       </section>
 
       <section className="ops-card p-6 md:p-8">
-        <p className="kicker">GridSearchCV</p>
-        <h2 className="mt-2 text-2xl">Optimized hyperparameters and model weights</h2>
-        <div className="mt-5 grid gap-5 lg:grid-cols-2">
+        <p className="kicker">Training setup</p>
+        <h2 className="mt-2 text-2xl">How the model was tuned</h2>
+        <DetailsToggle label="Optimized hyperparameters and model weights">
+        <div className="grid gap-5 lg:grid-cols-2">
           <pre className="metric-value overflow-x-auto rounded-2xl border border-ink/10 bg-white/40 p-4 text-xs leading-6 text-deep">
             {JSON.stringify(active.best_hyperparameters ?? {}, null, 2)}
           </pre>
@@ -169,15 +188,25 @@ export function RegistryPanel({
                 </li>
               </ul>
             ) : (
-              <p className="text-sm text-ink/70">model_weights are missing on the active row.</p>
+              <p className="text-sm text-ink/70">Weights are not stored on this model yet.</p>
             )}
           </div>
         </div>
+        </DetailsToggle>
       </section>
 
       <section className="ops-card p-6 md:p-8">
         <p className="kicker">Lineage</p>
-        <h2 className="mt-2 text-2xl">Model lineage and continuous training history</h2>
+        <h2 className="mt-2 text-2xl">Earlier versions</h2>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-ink/75">
+          The active row is the one answering today. Older models stay saved.
+        </p>
+        <DetailsToggle label="What active and archived mean">
+          <p className="max-w-3xl text-sm leading-6 text-ink/75">
+            Each training run inserts a new row as active first, then marks the previous row archived.
+            The .joblib files stay in the models bucket under their version name. Nothing is deleted.
+          </p>
+        </DetailsToggle>
         {history.length === 0 ? (
           <p className="mt-4 text-sm text-ink/70">The registry history is empty.</p>
         ) : (

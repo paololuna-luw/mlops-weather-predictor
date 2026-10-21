@@ -20,6 +20,7 @@ body {
   min-height: 100vh;
   color: var(--ink);
   background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 42%),
     radial-gradient(820px 420px at 8% -4%, rgba(150, 140, 210, 0.38), transparent 62%),
     radial-gradient(900px 440px at 96% 2%, rgba(110, 145, 230, 0.32), transparent 62%),
     linear-gradient(180deg, #c6cfe8 0%, #d3d9ec 50%, #dad8ea 100%);
@@ -89,6 +90,45 @@ button:disabled { cursor: not-allowed; }
 @media (prefers-reduced-motion: reduce) {
   .pulse-dot { animation: none; }
   html { scroll-behavior: auto; }
+  .rain-drop { animation: none; opacity: 0; }
+  .forecast-reveal,
+  .prob-fill,
+  .heat-cell,
+  .heat-cell-wet,
+  .month-bar,
+  .status-pop,
+  .today-tile,
+  table.data-grid tbody tr { animation: none; }
+}
+
+.rain-field {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.rain-drop {
+  position: absolute;
+  top: -14vh;
+  border-radius: 999px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.95) 38%,
+    rgba(214, 228, 255, 0.72)
+  );
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
+  animation-name: rain-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+@keyframes rain-fall {
+  0% { transform: translate3d(0, -12vh, 0) rotate(16deg); }
+  100% { transform: translate3d(-4vw, 118vh, 0) rotate(16deg); }
 }
 
 .metric-value {
@@ -141,5 +181,79 @@ body::after {
 }
 
 table.data-grid tbody tr:hover td { background: rgba(76, 127, 230, 0.06); }
+
+@keyframes forecast-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.forecast-reveal { animation: forecast-rise 0.55s ease both; }
+
+@keyframes status-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: none; }
+}
+.status-pop {
+  animation: status-in 0.22s ease both;
+  box-shadow: 0 16px 40px rgba(56, 45, 73, 0.12);
+}
+
+@keyframes tile-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+.today-tile { animation: tile-in 0.4s ease both; }
+
+@keyframes prob-grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.prob-fill {
+  transform-origin: left center;
+  animation: prob-grow 0.9s ease 0.15s both;
+}
+
+@keyframes heat-pop {
+  from { opacity: 0; transform: scale(0.15); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes wet-breathe {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.45); }
+}
+.heat-cell {
+  animation: heat-pop 0.45s ease var(--heat-delay, 0ms) both;
+}
+.heat-cell-wet {
+  animation:
+    heat-pop 0.45s ease var(--heat-delay, 0ms) both,
+    wet-breathe 2.6s ease-in-out calc(var(--heat-delay, 0ms) + 0.45s) infinite;
+}
+
+@keyframes month-rise {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+.month-bar {
+  transform-origin: bottom center;
+  animation: month-rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes row-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+table.data-grid tbody tr { animation: row-in 0.4s ease both; }
+table.data-grid tbody tr:nth-child(1) { animation-delay: 0.04s; }
+table.data-grid tbody tr:nth-child(2) { animation-delay: 0.08s; }
+table.data-grid tbody tr:nth-child(3) { animation-delay: 0.12s; }
+table.data-grid tbody tr:nth-child(4) { animation-delay: 0.16s; }
+table.data-grid tbody tr:nth-child(5) { animation-delay: 0.2s; }
+table.data-grid tbody tr:nth-child(6) { animation-delay: 0.24s; }
+table.data-grid tbody tr:nth-child(7) { animation-delay: 0.28s; }
+table.data-grid tbody tr:nth-child(8) { animation-delay: 0.32s; }
+table.data-grid tbody tr:nth-child(9) { animation-delay: 0.36s; }
+table.data-grid tbody tr:nth-child(10) { animation-delay: 0.4s; }
+table.data-grid tbody tr:nth-child(n + 11) { animation-delay: 0.44s; }
+
 ::selection { background: rgba(76, 127, 230, 0.28); }
 html { scrollbar-color: rgba(56, 45, 73, 0.3) transparent; }

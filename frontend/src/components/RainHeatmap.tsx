@@ -68,10 +68,10 @@ export function RainHeatmap() {
               {week.map((day, d) =>
                 day ? (
                   <span
-                    key={d}
+                    key={day.date}
                     title={`${day.date}: ${day.precipitation.toFixed(1)} mm`}
-                    className="h-3 w-3 rounded-[3px]"
-                    style={{ background: shade(day.precipitation) }}
+                    className={`heat-cell h-3 w-3 rounded-[3px]${day.precipitation >= 1 ? " heat-cell-wet" : ""}`}
+                    style={{ background: shade(day.precipitation), ["--heat-delay" as string]: `${Math.min(w, 52) * 18}ms` }}
                   />
                 ) : (
                   <span key={d} className="h-3 w-3" />
@@ -95,8 +95,12 @@ export function RainHeatmap() {
         {perMonth.map((count, i) => (
           <div key={MONTHS[i]} className="flex flex-1 flex-col items-center gap-1.5">
             <div
-              className="w-full rounded-t-md bg-lake/70"
-              style={{ height: `${Math.max((count / peak) * 88, count > 0 ? 6 : 2)}px`, opacity: count > 0 ? 1 : 0.3 }}
+              className="month-bar w-full rounded-t-md bg-lake/70"
+              style={{
+                height: `${Math.max((count / peak) * 88, count > 0 ? 6 : 2)}px`,
+                opacity: count > 0 ? 1 : 0.3,
+                animationDelay: `${i * 55}ms`,
+              }}
               title={`${MONTHS[i]}: ${count} rainy days`}
             />
             <span className="text-[11px] text-ink/60">{MONTHS[i]}</span>
