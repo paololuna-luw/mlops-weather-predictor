@@ -3,6 +3,8 @@
 import { Activity, Database, Loader2, Radar, RefreshCw } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
+import { AltiplanoReading } from "@/components/AltiplanoReading";
+import { RainHeatmap } from "@/components/RainHeatmap";
 import { FeatureStoreTable } from "@/components/FeatureStoreTable";
 import { ForecastHero } from "@/components/ForecastHero";
 import { InferenceLab } from "@/components/InferenceLab";
@@ -50,68 +52,55 @@ export function Dashboard() {
   const healthy = Boolean(status) && !error;
 
   return (
-    <main className="relative mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-8">
-      <header className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+    <main className="relative z-10 mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-12">
+      <header className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
         <div>
-          <p className="kicker">Puno · Lake Titicaca basin · supervised learning</p>
-          <h1 className="mt-2 max-w-4xl text-3xl font-semibold tracking-tight md:text-4xl">
+          <p className="kicker">Puno · Lake Titicaca basin</p>
+          <h1 className="mt-3 max-w-3xl text-3xl leading-tight tracking-tight md:text-5xl">
             Altiplano RainCast AI — Supervised MLOps Platform
           </h1>
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-reed-200/75 md:text-base">
-            Binary classification of tomorrow&apos;s rain from seven daily Open-Meteo features.
-            Production inference reads the active Supabase model on every request.
+          <p className="mt-4 max-w-xl text-base leading-7 text-ink/70">
+            Will it rain tomorrow in Puno? A live model that learns from fresh weather data every few hours.
           </p>
         </div>
         <button
           type="button"
           onClick={() => void refresh()}
           disabled={loading}
-          className="inline-flex items-center justify-center gap-2 self-start rounded-full border border-reed-400/60 bg-reed-400/10 px-4 py-2 text-sm font-medium text-reed-200 disabled:opacity-60"
+          className="soft-button inline-flex items-center justify-center gap-2 self-start rounded-full px-4 py-2 text-sm font-medium text-lake disabled:opacity-60"
         >
           {loading ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <RefreshCw className="h-4 w-4" aria-hidden />}
           Refresh Live MLOps State
         </button>
       </header>
 
-      <section className="ops-card mt-6 flex flex-col gap-4 px-4 py-4 md:flex-row md:items-center md:justify-between md:px-5">
-        <div className="flex items-center gap-3">
-          <span className={healthy ? "pulse-dot" : "h-2.5 w-2.5 rounded-full bg-amber-300"} aria-hidden />
-          <p className="font-medium">
-            Production Status: {healthy ? "Zero-Downtime Active" : "Awaiting Live State"}
-          </p>
-        </div>
-        <dl className="grid gap-3 text-sm text-reed-200/80 sm:grid-cols-3">
-          <div>
-            <dt className="text-xs uppercase tracking-[0.12em] text-reed-200/50">Active version</dt>
-            <dd className="metric-value mt-1">{active?.version ?? "Not published"}</dd>
-          </div>
-          <div>
-            <dt className="text-xs uppercase tracking-[0.12em] text-reed-200/50">Trained</dt>
-            <dd className="mt-1">{formatTimestamp(active?.created_at)}</dd>
-          </div>
-          <div>
-            <dt className="text-xs uppercase tracking-[0.12em] text-reed-200/50">State read</dt>
-            <dd className="mt-1">{formatTimestamp(status?.generated_at)}</dd>
-          </div>
-        </dl>
+      <section className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3 rounded-2xl border border-ink/10 bg-mist/70 px-5 py-3.5 text-sm">
+        <p className="flex items-center gap-2.5 font-medium">
+          <span className={healthy ? "pulse-dot" : "h-2.5 w-2.5 rounded-full bg-totora"} aria-hidden />
+          Production Status: {healthy ? "Zero-Downtime Active" : "Awaiting Live State"}
+        </p>
+        <p className="text-ink/65">
+          Version <span className="metric-value text-ink">{active?.version ?? "Not published"}</span>
+        </p>
+        <p className="text-ink/65">Trained {formatTimestamp(active?.created_at)}</p>
       </section>
 
       {error ? (
-        <p className="mt-4 rounded-2xl border border-rose-300/30 bg-rose-950/40 px-4 py-3 text-sm" role="alert">
+        <p className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 text-rose-900 px-4 py-3 text-sm" role="alert">
           {error}
         </p>
       ) : null}
       {status?.warnings?.length ? (
         <ul className="mt-4 space-y-2">
           {status.warnings.map((warning) => (
-            <li key={warning} className="rounded-2xl border border-amber-200/20 bg-amber-950/20 px-4 py-3 text-sm text-amber-50">
+            <li key={warning} className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
               {warning}
             </li>
           ))}
         </ul>
       ) : null}
 
-      <nav className="mt-6 flex flex-wrap gap-2" aria-label="Platform views">
+      <nav className="mt-8 inline-flex flex-wrap gap-1 rounded-full bg-white/40 p-1" aria-label="Platform views">
         {VIEWS.map((item) => {
           const selected = view === item.id;
           return (
@@ -121,7 +110,7 @@ export function Dashboard() {
               aria-pressed={selected}
               onClick={() => setView(item.id)}
               className={`rounded-full px-4 py-2 text-sm ${
-                selected ? "bg-reed-400 text-lake-950" : "border border-white/10 text-reed-200/80 hover:border-white/30"
+                selected ? "bg-lake text-white shadow-sm" : "text-ink/70 hover:bg-white/60"
               }`}
             >
               {item.label}
@@ -133,6 +122,7 @@ export function Dashboard() {
       <div className="mt-6">
         <div hidden={view !== "forecast"}>
           <ForecastHero forecast={status?.latest_forecast ?? null} />
+          <AltiplanoReading forecast={status?.latest_forecast ?? null} active={active} />
         </div>
         <div hidden={view !== "inference"}>
           <InferenceLab forecast={status?.latest_forecast ?? null} />
@@ -141,11 +131,13 @@ export function Dashboard() {
           <RegistryPanel active={active} history={status?.model_history ?? []} />
         </div>
         <div hidden={view !== "features"}>
+          <RainHeatmap />
+          <div className="mt-6" />
           <FeatureStoreTable rows={status?.recent_features ?? []} />
         </div>
       </div>
 
-      <footer className="mt-8 flex flex-col gap-3 border-t border-white/10 py-6 text-sm text-reed-200/60 md:flex-row md:items-center md:justify-between">
+      <footer className="mt-8 flex flex-col gap-3 border-t border-ink/10 py-6 text-sm text-ink/60 md:flex-row md:items-center md:justify-between">
         <p className="inline-flex items-center gap-2">
           <Radar className="h-4 w-4" aria-hidden />
           Open-Meteo · Supabase PostgreSQL · Supabase Storage · scikit-learn · GitHub Actions · Vercel

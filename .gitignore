@@ -1,5 +1,7 @@
 .env
 .env.local
+*.rar
+mlops-weather-predictor-main.rar
 frontend/.env.local
 frontend/.env
 credenciales y datos importantes pre iniciar.txt

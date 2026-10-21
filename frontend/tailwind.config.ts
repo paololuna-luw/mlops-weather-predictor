@@ -5,27 +5,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        lake: {
-          950: "#07141c",
-          900: "#0c1e28",
-          800: "#123140",
-        },
-        reed: {
-          200: "#f0ddc0",
-          400: "#e2b56a",
-          500: "#c9843a",
-        },
-        glacial: {
-          200: "#d5f3ee",
-          400: "#7fd1c4",
-        },
+        ink: "#382d49",
+        lake: "#4c7fe6",
+        deep: "#3a5cba",
+        mist: "#e4e8f5",
+        totora: "#8a6fc4",
       },
       fontFamily: {
-        sans: ["Outfit", "Avenir Next", "Segoe UI", "sans-serif"],
+        sans: ["Lato", "Avenir Next", "Segoe UI", "sans-serif"],
         mono: ["IBM Plex Mono", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       boxShadow: {
-        panel: "0 24px 60px rgba(0, 0, 0, 0.28)",
+        panel: "0 18px 50px rgba(56, 45, 73, 0.10)",
       },
     },
   },
